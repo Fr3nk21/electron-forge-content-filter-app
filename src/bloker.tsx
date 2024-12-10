@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const WebsiteBlocker = () => {
   const [blockedUrl, setBlockedUrl] = useState("");
@@ -48,46 +45,42 @@ const WebsiteBlocker = () => {
   };
 
   return (
-    <Card className="mx-auto mt-10 w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Website Blocker</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <Input
-            type="text"
-            placeholder="Enter URL to block (e.g., https://example.com)"
-            value={blockedUrl}
-            onChange={(e) => setBlockedUrl(e.target.value)}
-            className="w-full"
-          />
+    <div className="mx-auto mt-10 max-w-md rounded-lg bg-white p-6 shadow-md">
+      <h2 className="mb-4 text-center text-2xl font-bold">Website Blocker</h2>
 
-          {!isBlocked ? (
-            <Button
-              onClick={handleBlockWebsite}
-              className="w-full"
-              disabled={!blockedUrl}
-            >
-              Block Website
-            </Button>
-          ) : (
-            <Button
-              inClick={handleUnblockWebsite}
-              variant="destructive"
-              className="w-full"
-            >
-              Unblock Website
-            </Button>
-          )}
+      <div className="space-y-4">
+        <input
+          type="text"
+          placeholder="Enter URL to block (e.g., https://example.com)"
+          value={blockedUrl}
+          onChange={(e) => setBlockedUrl(e.target.value)}
+          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
-          {isBlocked && (
-            <div className="text-center text-red-500">
-              Website {blockedUrl} is currently blocked
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+        {!isBlocked ? (
+          <button
+            onClick={handleBlockWebsite}
+            disabled={!blockedUrl}
+            className="w-full rounded-md bg-blue-500 py-2 text-white transition duration-300 hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-400"
+          >
+            Block Website
+          </button>
+        ) : (
+          <button
+            onClick={handleUnblockWebsite}
+            className="w-full rounded-md bg-red-500 py-2 text-white transition duration-300 hover:bg-red-600"
+          >
+            Unblock Website
+          </button>
+        )}
+
+        {isBlocked && (
+          <div className="mt-2 text-center font-semibold text-red-500">
+            Website {blockedUrl} is currently blocked
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
