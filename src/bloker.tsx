@@ -1,18 +1,19 @@
 import React, { useState } from "react";
+import { ipcRenderer } from "electron";
 
 const WebsiteBlocker = () => {
   const [blockedUrl, setBlockedUrl] = useState("");
   const [isBlocked, setIsBlocked] = useState(false);
 
-  const handleBlockWebsite = () => {
+  const handleBlockWebsite = async () => {
     if (!blockedUrl) return;
 
     try {
-      // Use Electron's remote module to interact with the main process
+      // Electron-level blocking
       const { remote } = window.require("electron");
       const { session } = remote;
 
-      // Block the specific URL
+      // Block the specific URL in Electron
       session.defaultSession.webRequest.onBeforeRequest(
         { urls: [blockedUrl + "*"] },
         (details, callback) => {
@@ -20,25 +21,38 @@ const WebsiteBlocker = () => {
         },
       );
 
-      setIsBlocked(true);
+      // System-wide blocking via IPC
+      const result = await ipcRenderer.invoke("block-website", blockedUrl);
+
+      if (result) {
+        setIsBlocked(true);
+      } else {
+        throw new Error("Failed to block website system-wide");
+      }
     } catch (error) {
       console.error("Error blocking website:", error);
-      alert(
-        "Failed to block website. Ensure you are running in an Electron environment.",
-      );
+      alert("Failed to block website. Check console for details.");
     }
   };
 
-  const handleUnblockWebsite = () => {
+  const handleUnblockWebsite = async () => {
     try {
+      // Electron-level unblocking
       const { remote } = window.require("electron");
       const { session } = remote;
 
       // Remove the web request filter
       session.defaultSession.webRequest.onBeforeRequest(null);
 
-      setIsBlocked(false);
-      setBlockedUrl("");
+      // System-wide unblocking via IPC
+      const result = await ipcRenderer.invoke("unblock-website", blockedUrl);
+
+      if (result) {
+        setIsBlocked(false);
+        setBlockedUrl("");
+      } else {
+        throw new Error("Failed to unblock website system-wide");
+      }
     } catch (error) {
       console.error("Error unblocking website:", error);
     }
