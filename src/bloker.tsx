@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import React, { useState } from "react";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 
 const WebsiteBlocker = () => {
   const [blockedUrl, setBlockedUrl] = useState("");
@@ -12,7 +10,7 @@ const WebsiteBlocker = () => {
 
     try {
       // Electron-level blocking
-      const { remote } = window.require("electron");
+      // const { remote } = window.require("electron");
       const { session } = remote;
 
       // Block the specific URL in Electron
@@ -40,7 +38,6 @@ const WebsiteBlocker = () => {
   const handleUnblockWebsite = async () => {
     try {
       // Electron-level unblocking
-      const { remote } = window.require("electron");
       const { session } = remote;
 
       // Remove the web request filter
@@ -61,8 +58,8 @@ const WebsiteBlocker = () => {
   };
 
   return (
-    <div className="max-w-md p-6 mx-auto mt-10 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-2xl font-bold text-center">Website Blocker</h2>
+    <div className="mx-auto mt-10 max-w-md rounded-lg bg-white p-6 shadow-md">
+      <h2 className="mb-4 text-center text-2xl font-bold">Website Blocker</h2>
 
       <div className="space-y-4">
         <input
@@ -70,28 +67,28 @@ const WebsiteBlocker = () => {
           placeholder="Enter URL to block (e.g., https://example.com)"
           value={blockedUrl}
           onChange={(e) => setBlockedUrl(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         {!isBlocked ? (
           <button
             onClick={handleBlockWebsite}
             disabled={!blockedUrl}
-            className="w-full py-2 text-white transition duration-300 bg-blue-500 rounded-md hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="w-full rounded-md bg-blue-500 py-2 text-white transition duration-300 hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
             Block Website
           </button>
         ) : (
           <button
             onClick={handleUnblockWebsite}
-            className="w-full py-2 text-white transition duration-300 bg-red-500 rounded-md hover:bg-red-600"
+            className="w-full rounded-md bg-red-500 py-2 text-white transition duration-300 hover:bg-red-600"
           >
             Unblock Website
           </button>
         )}
 
         {isBlocked && (
-          <div className="mt-2 font-semibold text-center text-red-500">
+          <div className="mt-2 text-center font-semibold text-red-500">
             Website {blockedUrl} is currently blocked
           </div>
         )}

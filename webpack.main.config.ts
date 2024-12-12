@@ -1,20 +1,38 @@
-import type { Configuration } from 'webpack';
+import type { Configuration } from "webpack";
+import path from "path";
 
-import { rules } from './webpack.rules';
-import { plugins } from './webpack.plugins';
+// const { rules } = require("./webpack.rules");
+// const { plugins } = require("./webpack.plugins");
 
-export const mainConfig: Configuration = {
+import { rules } from "./webpack.rules";
+import { plugins } from "./webpack.plugins";
+
+const mainConfig: Configuration = {
   /**
    * This is the main entry point for your application, it's the first file
    * that runs in the main process.
    */
-  entry: './src/index.ts',
+  mode: "development",
+  entry: "./src/index.ts",
   // Put your normal webpack config below here
+  target: "electron-main",
   module: {
     rules,
   },
-  plugins,
+  plugins: [...plugins],
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+    extensions: [".js", ".ts", ".jsx", ".tsx", ".css", ".json"],
+    fallback: {
+      fs: false,
+      path: require.resolve("path-browserify"),
+    },
   },
+  output: {
+    filename: "main.js",
+    path: path.resolve(__dirname, ".webpack/main"),
+  },
+  devtool: "source-map",
 };
+
+module.exports = mainConfig;
+export { mainConfig };
